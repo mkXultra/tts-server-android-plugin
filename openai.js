@@ -21,7 +21,9 @@ function getAudio(text, voice, rate, volume, pitch) {
     if (voice === null || voice === "") {
         voice = "alloy"
     }
-
+    if (rate === null || rate === "") {
+        rate = 1
+    }
     let url = "wss://api.openai.com/v1/audio/speech"
     let ws = null
 
@@ -73,6 +75,7 @@ function getAudio(text, voice, rate, volume, pitch) {
             model: "tts-1",
             input: text,
             voice: voice,
+            response_format: "aac",
             speed: rate
         })
         ws.send(message)
