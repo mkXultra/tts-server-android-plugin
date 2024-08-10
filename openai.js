@@ -58,7 +58,7 @@ function getAudio(text, voice, rate, volume, pitch) {
 
 let EditorJS = {
     'getAudioSampleRate': function (locale, voice) {
-         let audio = PluginJS.getAudio('test', locale, voice, 50, 50, 50)
+         let audio = PluginJS.getAudio('test', locale, voice, 20, 50, 50)
          return ttsrv.getAudioSampleRate(audio)
 //        return 22050
     },
