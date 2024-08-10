@@ -27,8 +27,8 @@ function getAudio(text, voice, rate, volume, pitch) {
     if (rate === null || rate === "" || rate === 0) {
         speed = 1
     } else{
-        // 50% = 1
-        speed = (parseFloat(rate) / 50)
+        // kindle reader speed is 1 = 20%
+        speed = (parseFloat(rate) / 20)
         // Ensure rate is within the valid range
         speed = Math.max(0.25, Math.min(4.0, parseFloat(speed)))
     }
