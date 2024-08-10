@@ -29,6 +29,7 @@ function getAudio(text, voice, rate, volume, pitch) {
 
     // Ensure rate is within the valid range
     rate = Math.max(0.25, Math.min(4.0, parseFloat(rate)))
+    logger.i("ensure rate: " + rate)
 
     let reqHeaders = {
         'Content-Type': 'application/json',
