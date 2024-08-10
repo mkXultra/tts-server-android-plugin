@@ -20,17 +20,19 @@ let PluginJS = {
 function getAudio(text, voice, rate, volume, pitch) {
     logger.i("getAudio")
     logger.i("rate: " + rate)
+    let speed = rate
     if (voice === null || voice === "") {
         voice = "alloy"
     }
-    if (rate === null || rate === "") {
-        rate = 1
+    if (rate === null || rate === "" || rate === 0) {
+        speed = 1
+    } else{
+        // 50% = 1
+        speed = (parseFloat(rate) / 50)
+        // Ensure rate is within the valid range
+        speed = Math.max(0.25, Math.min(4.0, parseFloat(speed)))
     }
-    // 50% = 0.5
-    rate = (parseFloat(rate) / 100)
-    // Ensure rate is within the valid range
-    rate = Math.max(0.25, Math.min(4.0, parseFloat(rate)))
-    logger.i("ensure rate: " + rate)
+    logger.i("speed: " + speed)
 
     let reqHeaders = {
         'Content-Type': 'application/json',
@@ -42,7 +44,7 @@ function getAudio(text, voice, rate, volume, pitch) {
         "input": text,
         "voice": voice,
         "response_format": "opus",
-        "speed": rate
+        "speed": speed
     }
     let str = JSON.stringify(body)
     let resp = ttsrv.httpPost('https://api.openai.com/v1/audio/speech', str, reqHeaders)
@@ -50,7 +52,7 @@ function getAudio(text, voice, rate, volume, pitch) {
     if (resp.isSuccessful()) {
         return resp.body().byteStream()
     } else {
-        throw "FAILED: status=" + resp.code()
+        throw "FAILED: status=" + resp.code() + " body=" + resp.body() + " params=" + "text=" + text + " voice=" + voice + " rate=" + rate + " volume=" + volume + " pitch=" + pitch
     }
 }
 
