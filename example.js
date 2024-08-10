@@ -87,7 +87,7 @@ function getAudio(text, voice, rate, volume, pitch) {
     ws.onFailure = function (t) {
         logger.e("onFailure: " + t)
         pos.close()
-        throw "Websocket失败: " + t
+        throw "WebSocket failure: " + t
     }
 
     ws.onTextMessage = function (str) {
@@ -109,7 +109,7 @@ function getAudio(text, voice, rate, volume, pitch) {
     ws.onClosing = function (code, reason) {
         logger.e("onClosing: " + code + reason)
         if (code != 1000){
-            throw "Websocket关闭: " + code + reason
+            throw "WebSocket closed: " + code + reason
         }
     }
 
@@ -157,16 +157,16 @@ function getAudio(text, voice, rate, volume, pitch) {
 }
 
 
-// 全部voice数据
+// All voice data
 let voices = {}
-// 当前语言下的voice
+// Voices for the current language
 let currentVoices = new Map()
 
 let EditorJS = {
-    //音频的采样率 编辑TTS界面保存时调用
+    // Audio sample rate, called when saving the TTS interface
     "getAudioSampleRate": function (locale, voice) {
-        // 根据voice判断返回的采样率
-        // 也可以动态获取：
+        // Determine the sample rate based on the voice
+        // Can also be dynamically obtained:
         return sampleRate
     },
 
@@ -174,26 +174,26 @@ let EditorJS = {
         return ["zh-CN"]
     },
 
-    // 当语言变更时调用
+    // Called when the language changes
     "getVoices": function (locale) {
-        return {"xiaoyan": "讯飞小燕",
-            "aisjiuxu": "讯飞许久",
-            "aisxping": "讯飞小萍",
-            "aisjinger": "讯飞小婧",
-            "aisbabyxu": "讯飞许小宝",
-            "ais111": "以下为特色发音人 4.28到期",
-            "x4_lingfeizhe_zl": "聆飞哲",
-            "x4_lingxiaoyao_comic":"聆小瑶-幽默",
-            "x4_lingxiaoyao_em": '聆小瑶-情感',
-            "x4_lingxiaoyao_en": '聆小瑶-助理',
-            "x3_yifei": "讯飞一菲",
-            "x_laoma": "讯飞马叔",
-            "x_yuanye": "讯飞易阳泽(原野)",
-            "x2_xiaowan": "讯飞小婉",
-            "x3_guanshan": "讯飞关山",
-            "x3_guanshan_talk": "讯飞关山-对话",
-            "x3_qianxue": "讯飞千雪",
-            "x_dahuilang": "讯飞大灰狼",
+        return {"xiaoyan": "iFLYTEK Xiaoyan",
+            "aisjiuxu": "iFLYTEK Xiujiu",
+            "aisxping": "iFLYTEK Xiaoping",
+            "aisjinger": "iFLYTEK Xiaojing",
+            "aisbabyxu": "iFLYTEK Xuxiaobao",
+            "ais111": "The following are special voices (expires on 4.28)",
+            "x4_lingfeizhe_zl": "Lingfeizhe",
+            "x4_lingxiaoyao_comic":"Lingxiaoyao-Humor",
+            "x4_lingxiaoyao_em": 'Lingxiaoyao-Emotion',
+            "x4_lingxiaoyao_en": 'Lingxiaoyao-Assistant',
+            "x3_yifei": "iFLYTEK Yifei",
+            "x_laoma": "iFLYTEK Uncle Ma",
+            "x_yuanye": "iFLYTEK Yi Yangze (Yuanye)",
+            "x2_xiaowan": "iFLYTEK Xiaowan",
+            "x3_guanshan": "iFLYTEK Guanshan",
+            "x3_guanshan_talk": "iFLYTEK Guanshan-Dialogue",
+            "x3_qianxue": "iFLYTEK Qianxue",
+            "x_dahuilang": "iFLYTEK Big Bad Wolf",
        }
     },
 
@@ -201,7 +201,7 @@ let EditorJS = {
 
     "onLoadUI": function (ctx, linerLayout) {
         let cb = new CheckBox(ctx)
-        cb.setText("背景音乐（仅特色发音人支持）")
+        cb.setText("Background music (only supported for special voices)")
         cb.setChecked(ttsrv.tts.data["bgm"] == "true")
         cb.setOnCheckedChangeListener(function (view, isChecked) {
             ttsrv.tts.data["bgm"] = isChecked + ''
@@ -215,5 +215,3 @@ let EditorJS = {
     }
 
 }
-
-
