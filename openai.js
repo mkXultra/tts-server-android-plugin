@@ -1,4 +1,5 @@
 let apiKey = ttsrv.userVars["apiKey"]
+let sampleRate = 16000
 
 let PluginJS = {
     "name": "OpenAItts",
