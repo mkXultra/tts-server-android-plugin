@@ -26,7 +26,8 @@ function getAudio(text, voice, rate, volume, pitch) {
     if (rate === null || rate === "") {
         rate = 1
     }
-
+    // 50% = 0.5
+    rate = (parseFloat(rate) / 100)
     // Ensure rate is within the valid range
     rate = Math.max(0.25, Math.min(4.0, parseFloat(rate)))
     logger.i("ensure rate: " + rate)
