@@ -21,24 +21,65 @@ function getAudio(text, voice, rate, volume, pitch) {
         voice = "alloy"
     }
 
-    let url = "https://api.openai.com/v1/audio/speech"
-    let headers = {
-        "Authorization": "Bearer " + apiKey,
-        "Content-Type": "application/json"
-    }
-    let body = JSON.stringify({
-        model: "tts-1",
-        input: text,
-        voice: voice,
-        speed: rate
-    })
+    let url = "wss://api.openai.com/v1/audio/speech"
+    let ws = null
 
-    let response = ttsrv.httpPost(url, headers, body)
-    if (response.code !== 200) {
-        throw "OpenAI API error: " + response.code + " " + response.body
+    let pos = new java.io.PipedOutputStream()
+
+    function connectWebSocket() {
+        ws = JWebSocket(new java.lang.String(url), {
+            "Authorization": "Bearer " + apiKey,
+            "Content-Type": "application/json"
+        })
+
+        ws.onOpen = function (response) {
+            logger.i("WebSocket opened: " + response)
+            sendMessage()
+        }
+
+        ws.onFailure = function (t) {
+            logger.e("WebSocket failure: " + t)
+            pos.close()
+            throw "WebSocket failure: " + t
+        }
+
+        ws.onTextMessage = function (str) {
+            let result = JSON.parse(str)
+            if (result.audio) {
+                let audio = ttsrv.base64DecodeToBytes(result.audio)
+                pos.write(audio)
+            }
+            if (result.status === "done") {
+                pos.close()
+                ws.close(1000)
+            }
+        }
+
+        ws.onClosing = function (code, reason) {
+            logger.i("WebSocket closing: " + code + " " + reason)
+        }
+
+        ws.onClosed = function (code, reason) {
+            logger.i("WebSocket closed: " + code + " " + reason)
+            pos.close()
+        }
+
+        ws.connect()
     }
 
-    return new java.io.ByteArrayInputStream(response.body)
+    function sendMessage() {
+        let message = JSON.stringify({
+            model: "tts-1",
+            input: text,
+            voice: voice,
+            speed: rate
+        })
+        ws.send(message)
+    }
+
+    connectWebSocket()
+
+    return new java.io.PipedInputStream(pos)
 }
 
 let EditorJS = {
