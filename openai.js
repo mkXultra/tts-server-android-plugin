@@ -9,7 +9,7 @@ let PluginJS = {
     "version": 1,
 
     "vars": {
-        apiKey: {label: "API Key"}
+        apiKey: {label: "API-KEY", hint: "OpenAI API-KEY"},
     },
 
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
@@ -24,71 +24,33 @@ function getAudio(text, voice, rate, volume, pitch) {
     if (rate === null || rate === "") {
         rate = 1
     }
-    let url = "wss://api.openai.com/v1/audio/speech"
-    let ws = null
 
-    let pos = new java.io.PipedOutputStream()
-
-    function connectWebSocket() {
-        ws = JWebSocket(new java.lang.String(url), {
-            "Authorization": "Bearer " + apiKey,
-            "Content-Type": "application/json"
-        })
-
-        ws.onOpen = function (response) {
-            logger.i("WebSocket opened: " + response)
-            sendMessage()
-        }
-
-        ws.onFailure = function (t) {
-            logger.e("WebSocket failure: " + t)
-            pos.close()
-            throw "WebSocket failure: " + t
-        }
-
-        ws.onTextMessage = function (str) {
-            let result = JSON.parse(str)
-            if (result.audio) {
-                let audio = ttsrv.base64DecodeToBytes(result.audio)
-                pos.write(audio)
-            }
-            if (result.status === "done") {
-                pos.close()
-                ws.close(1000)
-            }
-        }
-
-        ws.onClosing = function (code, reason) {
-            logger.i("WebSocket closing: " + code + " " + reason)
-        }
-
-        ws.onClosed = function (code, reason) {
-            logger.i("WebSocket closed: " + code + " " + reason)
-            pos.close()
-        }
-
-        ws.connect()
+    let reqHeaders = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
     }
 
-    function sendMessage() {
-        let message = JSON.stringify({
-            model: "tts-1",
-            input: text,
-            voice: voice,
-            response_format: "aac",
-            speed: rate
-        })
-        ws.send(message)
+    let body = {
+        "model": "tts-1",
+        "input": text,
+        "voice": voice,
+        "response_format": "opus"
     }
+    let str = JSON.stringify(body)
+    let resp = ttsrv.httpPost('https://api.openai.com/v1/audio/speech', str, reqHeaders)
 
-    connectWebSocket()
-
-    return new java.io.PipedInputStream(pos)
+    if (resp.isSuccessful()) {
+        return resp.body().byteStream()
+    } else {
+        throw "FAILED: status=" + resp.code()
+    }
 }
 
 let EditorJS = {
-    "getAudioSampleRate": function (locale, voice) {
-        return sampleRate
+    'getAudioSampleRate': function (locale, voice) {
+         let audio = PluginJS.getAudio('test', locale, voice, 50, 50, 50)
+         return ttsrv.getAudioSampleRate(audio)
+//        return 22050
     },
 
     "getLocales": function () {
