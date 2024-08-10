@@ -25,6 +25,9 @@ function getAudio(text, voice, rate, volume, pitch) {
         rate = 1
     }
 
+    // Ensure rate is within the valid range
+    rate = Math.max(0.25, Math.min(4.0, parseFloat(rate)))
+
     let reqHeaders = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + apiKey
@@ -34,7 +37,8 @@ function getAudio(text, voice, rate, volume, pitch) {
         "model": "tts-1",
         "input": text,
         "voice": voice,
-        "response_format": "opus"
+        "response_format": "opus",
+        "speed": rate
     }
     let str = JSON.stringify(body)
     let resp = ttsrv.httpPost('https://api.openai.com/v1/audio/speech', str, reqHeaders)
