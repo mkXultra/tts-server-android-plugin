@@ -1,0 +1,1 @@
+jq --rawfile code openai.js '.[0].code = $code' openai_base.json > openai.json

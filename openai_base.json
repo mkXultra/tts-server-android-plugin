@@ -1,0 +1,13 @@
+[
+  {
+    "version": 1,
+    "name": "OpenAItts",
+    "pluginId": "mk.openai.tts",
+    "author": "mkXultra",
+    "defVars": {
+      "apiKey": {
+        "label": "ApiKey"
+      }
+    }
+  }
+]

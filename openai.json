@@ -1,0 +1,14 @@
+[
+  {
+    "version": 1,
+    "name": "OpenAItts",
+    "pluginId": "mk.openai.tts",
+    "author": "mkXultra",
+    "defVars": {
+      "apiKey": {
+        "label": "ApiKey"
+      }
+    },
+    "code": "let apiKey = ttsrv.userVars[\"apiKey\"]\n\nlet PluginJS = {\n    \"name\": \"OpenAItts\",\n    \"pluginId\": \"mk.openai.tts\",\n    \"author\": \"mkXultra\",\n    \"description\": \"OpenAI Text-to-Speech API\",\n    \"version\": 1,\n\n    \"vars\": {\n        apiKey: {label: \"API Key\"}\n    },\n\n    \"getAudio\": function (text, locale, voice, rate, volume, pitch) {\n        return getAudio(text, voice, rate, volume, pitch)\n    },\n}\n\nfunction getAudio(text, voice, rate, volume, pitch) {\n    if (voice === null || voice === \"\") {\n        voice = \"alloy\"\n    }\n\n    let url = \"https://api.openai.com/v1/audio/speech\"\n    let headers = {\n        \"Authorization\": \"Bearer \" + apiKey,\n        \"Content-Type\": \"application/json\"\n    }\n    let body = JSON.stringify({\n        model: \"tts-1\",\n        input: text,\n        voice: voice,\n        speed: rate\n    })\n\n    let response = ttsrv.httpPost(url, headers, body)\n    if (response.code !== 200) {\n        throw \"OpenAI API error: \" + response.code + \" \" + response.body\n    }\n\n    return new java.io.ByteArrayInputStream(response.body)\n}\n\nlet EditorJS = {\n    \"getAudioSampleRate\": function (locale, voice) {\n        return sampleRate\n    },\n\n    \"getLocales\": function () {\n        return [\"en-US\"]\n    },\n\n    \"getVoices\": function (locale) {\n        return {\n            \"alloy\": \"Alloy\",\n            \"echo\": \"Echo\",\n            \"fable\": \"Fable\",\n            \"onyx\": \"Onyx\",\n            \"nova\": \"Nova\",\n            \"shimmer\": \"Shimmer\"\n        }\n    },\n\n    \"onLoadData\": function () {},\n\n    \"onLoadUI\": function (ctx, linerLayout) {\n        let cb = new CheckBox(ctx)\n        cb.setText(\"Background music (only supported for special voices)\")\n        cb.setChecked(ttsrv.tts.data[\"bgm\"] == \"true\")\n        cb.setOnCheckedChangeListener(function (view, isChecked) {\n            ttsrv.tts.data[\"bgm\"] = isChecked + ''\n        })\n        linerLayout.addView(cb)\n        ttsrv.setMargins(cb, 0, 8, 10, 0)\n    },\n\n    \"onVoiceChanged\": function (locale, voiceCode) {\n\n    }\n}"
+  }
+]
