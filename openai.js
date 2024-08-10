@@ -18,6 +18,8 @@ let PluginJS = {
 }
 
 function getAudio(text, voice, rate, volume, pitch) {
+    logger.i("getAudio")
+    logger.i("rate: " + rate)
     if (voice === null || voice === "") {
         voice = "alloy"
     }
