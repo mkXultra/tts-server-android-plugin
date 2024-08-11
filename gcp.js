@@ -1,4 +1,5 @@
 let apiKey = ttsrv.userVars["apiKey"]
+let manualLangSpeed = ttsrv.userVars["manualLangSpeed"]
 let sampleRate = 16000
 
 let PluginJS = {
