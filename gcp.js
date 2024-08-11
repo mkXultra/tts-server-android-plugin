@@ -10,7 +10,7 @@ let PluginJS = {
 
     "vars": {
         apiKey: {label: "API-KEY", hint: "Google Cloud API-KEY"},
-        // manualLangSpeed: {label: "Manual Language Speed", hint: "Manual Language Speed"},
+        manualLangSpeed: {label: "Manual Language Speed", hint: "Manual Language Speed"},
     },
 
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
@@ -49,8 +49,9 @@ function isEnglish(text) {
 
 function getAudio(text, voice, rate, volume, pitch) {
     let speed = rate
+    let jpSpeed = 1
     if (voice === null || voice === "") {
-        voice = "ja-JP-Journey-F"
+        voice = "en-US-Journey-F"
     }
     if (rate === null || rate === "" || rate === 0) {
         speed = 1
@@ -59,6 +60,10 @@ function getAudio(text, voice, rate, volume, pitch) {
         speed = (parseFloat(rate) / 20)
         // Ensure rate is within the valid range
         speed = Math.max(0.25, Math.min(4.0, parseFloat(speed)))
+    }
+
+    if(manualLangSpeed < 3){
+        jpSpeed = manualLangSpeed
     }
 
     let reqHeaders = {
@@ -91,7 +96,7 @@ function getAudio(text, voice, rate, volume, pitch) {
             },
             "audioConfig": {
                 "audioEncoding": "OGG_OPUS",
-                "speakingRate": speed
+                "speakingRate": jpSpeed
             }
         }
     }
@@ -120,9 +125,9 @@ let EditorJS = {
     "getVoices": function (locale) {
         return {
             // default
-            "ja-JP-Journey-F": "ja-JP-Journey-F",
+            "en-US-Journey-F": "en-US-Journey-F",
 
-            "ja-JP-Journey-D": "ja-JP-Journey-D",
+            "en-US-Journey-D": "en-US-Journey-D",
             "en-US-Journey-O": "en-US-Journey-O",
             "en-US-Neural2-A": "en-US-Neural2-A",
             "en-US-Neural2-C": "en-US-Neural2-C",
