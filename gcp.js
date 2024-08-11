@@ -34,7 +34,7 @@ function isEnglish(text) {
 
   // 文字列内の各文字をチェック
   for (let i = 0; i < text.length; i++) {
-    const charCode = text.charCodeAt(i);
+    let charCode = text.charCodeAt(i);
     
     // 日本語の文字コード範囲内にあるかチェック
     for (let range of japaneseRanges) {
