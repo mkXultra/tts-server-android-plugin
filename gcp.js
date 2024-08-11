@@ -53,7 +53,9 @@ function getAudio(text, voice, rate, volume, pitch) {
     let resp = ttsrv.httpPost('https://texttospeech.googleapis.com/v1/text:synthesize', str, reqHeaders)
 
     if (resp.isSuccessful()) {
-        return resp.body().byteStream()
+        let audioContent = JSON.parse(resp.body()).audioContent;
+        logger.i("audioContent: " + audioContent)
+        return audioContent
     } else {
         throw "FAILED: status=" + resp.code() + " body=" + resp.body() + " params=" + "text=" + text + " voice=" + voice + " rate=" + rate + " volume=" + volume + " pitch=" + pitch
     }
