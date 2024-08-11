@@ -10,6 +10,7 @@ let PluginJS = {
 
     "vars": {
         apiKey: {label: "API-KEY", hint: "Google Cloud API-KEY"},
+        // manualLangSpeed: {label: "Manual Language Speed", hint: "Manual Language Speed"},
     },
 
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
@@ -17,10 +18,39 @@ let PluginJS = {
     },
 }
 
+function base64ToByteArray(base64) {
+    var decoder = java.util.Base64.getDecoder();
+    return decoder.decode(base64);
+}
+
+function isEnglish(text) {
+  // 日本語の文字コード範囲
+  const japaneseRanges = [
+    { start: 0x3040, end: 0x309F }, // ひらがな
+    { start: 0x30A0, end: 0x30FF }, // カタカナ
+    { start: 0x4E00, end: 0x9FFF }  // 漢字
+  ];
+
+  // 文字列内の各文字をチェック
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i);
+    
+    // 日本語の文字コード範囲内にあるかチェック
+    for (let range of japaneseRanges) {
+      if (charCode >= range.start && charCode <= range.end) {
+        return false;
+      }
+    }
+  }
+
+  // 日本語の文字が見つからなかった場合は英語と判断
+  return true;
+}
+
 function getAudio(text, voice, rate, volume, pitch) {
     let speed = rate
     if (voice === null || voice === "") {
-        voice = "ja-JP-Wavenet-A"
+        voice = "ja-JP-Journey-F"
     }
     if (rate === null || rate === "" || rate === 0) {
         speed = 1
@@ -36,31 +66,41 @@ function getAudio(text, voice, rate, volume, pitch) {
         'X-Goog-Api-Key': apiKey
     }
 
-    let body = {
-        "input": {
-            "text": text
-        },
-        "voice": {
-            "languageCode": "ja-JP",
-            "name": "ja-JP-Wavenet-A"
-        },
-        "audioConfig": {
-            "audioEncoding": "OGG_OPUS",
-            "speakingRate": speed
+    if (isEnglish(text)) {
+        body = {
+            "input": {
+                "text": text
+            },
+            "voice": {
+                "languageCode": "en-US",
+                "name": voice
+            },
+            "audioConfig": {
+                "audioEncoding": "OGG_OPUS",
+                "speakingRate": speed
+            }
+        }
+    }else{
+        body = {
+            "input": {
+                "text": text
+            },
+            "voice": {
+                "languageCode": "ja-JP",
+                "name": "ja-JP-Wavenet-A"
+            },
+            "audioConfig": {
+                "audioEncoding": "OGG_OPUS",
+                "speakingRate": speed
+            }
         }
     }
     let str = JSON.stringify(body)
     let resp = ttsrv.httpPost('https://texttospeech.googleapis.com/v1/text:synthesize', str, reqHeaders)
 
     if (resp.isSuccessful()) {
-        let body = resp.body();
-        logger.i("Body type:"+ typeof body);
-        logger.i("Body constructor:"+ body.constructor.name);
-        logger.i("Body keys:"+ Object.keys(body));
-        logger.i("Body length:"+ body.length);
         let audioContent = JSON.parse(resp.body().string()).audioContent;
-        logger.i("audioContent: " + audioContent)
-        return audioContent
+        return base64ToByteArray(audioContent)
     } else {
         throw "FAILED: status=" + resp.code() + " body=" + resp.body() + " params=" + "text=" + text + " voice=" + voice + " rate=" + rate + " volume=" + volume + " pitch=" + pitch
     }
@@ -79,12 +119,13 @@ let EditorJS = {
 
     "getVoices": function (locale) {
         return {
-            "alloy": "Alloy",
-            "echo": "Echo",
-            "fable": "Fable",
-            "onyx": "Onyx",
-            "nova": "Nova",
-            "shimmer": "Shimmer"
+            // default
+            "ja-JP-Journey-F": "ja-JP-Journey-F",
+
+            "ja-JP-Journey-D": "ja-JP-Journey-D",
+            "en-US-Journey-O": "en-US-Journey-O",
+            "en-US-Neural2-A": "en-US-Neural2-A",
+            "en-US-Neural2-C": "en-US-Neural2-C",
         }
     },
 
