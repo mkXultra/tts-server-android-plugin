@@ -7,6 +7,10 @@
     "defVars": {
       "apiKey": {
         "label": "ApiKey"
+      },
+      "manualLangSpeed": {
+        "label": "Manual Language Speed",
+        "hint": "Manual Language Speed"
       }
     }
   }
