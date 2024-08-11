@@ -54,11 +54,11 @@ function getAudio(text, voice, rate, volume, pitch) {
 
     if (resp.isSuccessful()) {
         let body = resp.body();
-        logger.i("Body type:", typeof body);
-        logger.i("Body constructor:", body.constructor.name);
-        logger.i("Body keys:", Object.keys(body));
-        logger.i("Body length:", body.length);
-        let audioContent = JSON.parse(resp.body()).audioContent;
+        logger.i("Body type:"+ typeof body);
+        logger.i("Body constructor:"+ body.constructor.name);
+        logger.i("Body keys:"+ Object.keys(body));
+        logger.i("Body length:"+ body.length);
+        let audioContent = JSON.parse(resp.body().string()).audioContent;
         logger.i("audioContent: " + audioContent)
         return audioContent
     } else {
