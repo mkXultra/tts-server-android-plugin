@@ -1,6 +1,7 @@
 let apiKey = ttsrv.userVars["apiKey"]
 let manualLangSpeed = ttsrv.userVars["manualLangSpeed"]
-let sampleRate = 16000
+let defaultVoice = "en-US-Journey-F"
+let jpDefaultVoice = "ja-JP-Wavenet-A"
 
 let PluginJS = {
     "name": "GCPTTS",
@@ -17,6 +18,11 @@ let PluginJS = {
     "getAudio": function (text, locale, voice, rate, volume, pitch) {
         return getAudio(text, voice, rate, volume, pitch)
     },
+}
+
+function getGender(voiceCode) {
+    let voices = EditorJS.getVoices("en-US");
+    return voices[voiceCode] && voices[voiceCode].startsWith("MALE") ? "MALE" : "FEMALE";
 }
 
 function base64ToByteArray(base64) {
@@ -52,7 +58,7 @@ function getAudio(text, voice, rate, volume, pitch) {
     let speed = rate
     let jpSpeed = 1
     if (voice === null || voice === "") {
-        voice = "en-US-Journey-F"
+        voice = defaultVoice
     }
     if (rate === null || rate === "" || rate === 0) {
         speed = 1
@@ -87,13 +93,19 @@ function getAudio(text, voice, rate, volume, pitch) {
             }
         }
     }else{
+        const gender = getGender(voice);
+        let jpFEMALEVoice = "ja-JP-Neural2-B"
+        if (voice == defaultVoice){
+            jpFEMALEVoice = jpDefaultVoice
+        }
+        let jpVoice = gender == "FEMALE" ? jpFEMALEVoice : "ja-JP-Neural2-D"
         body = {
             "input": {
                 "text": text
             },
             "voice": {
                 "languageCode": "ja-JP",
-                "name": "ja-JP-Wavenet-A"
+                "name": jpVoice
             },
             "audioConfig": {
                 "audioEncoding": "OGG_OPUS",
@@ -126,12 +138,47 @@ let EditorJS = {
     "getVoices": function (locale) {
         return {
             // default
-            "en-US-Journey-F": "en-US-Journey-F",
+            "en-US-Journey-F": "FEMALE en-US-Journey-F",
 
-            "en-US-Journey-D": "en-US-Journey-D",
-            "en-US-Journey-O": "en-US-Journey-O",
-            "en-US-Neural2-A": "en-US-Neural2-A",
-            "en-US-Neural2-C": "en-US-Neural2-C",
+            "en-US-Casual-K": "MALE en-US-Casual-K",
+            "en-US-Journey-D": "MALE en-US-Journey-D",
+            "en-US-Journey-F": "FEMALE en-US-Journey-F",
+            "en-US-Journey-O": "FEMALE en-US-Journey-O",
+            "en-US-Neural2-A": "MALE en-US-Neural2-A",
+            "en-US-Neural2-C": "FEMALE en-US-Neural2-C",
+            "en-US-Neural2-D": "MALE en-US-Neural2-D",
+            "en-US-Neural2-E": "FEMALE en-US-Neural2-E",
+            "en-US-Neural2-F": "FEMALE en-US-Neural2-F",
+            "en-US-Neural2-G": "FEMALE en-US-Neural2-G",
+            "en-US-Neural2-H": "FEMALE en-US-Neural2-H",
+            "en-US-Neural2-I": "MALE en-US-Neural2-I",
+            "en-US-Neural2-J": "MALE en-US-Neural2-J",
+            "en-US-News-K": "FEMALE en-US-News-K",
+            "en-US-News-L": "FEMALE en-US-News-L",
+            "en-US-News-N": "MALE en-US-News-N",
+            "en-US-Polyglot-1": "MALE en-US-Polyglot-1",
+            "en-US-Standard-A": "MALE en-US-Standard-A",
+            "en-US-Standard-B": "MALE en-US-Standard-B",
+            "en-US-Standard-C": "FEMALE en-US-Standard-C",
+            "en-US-Standard-D": "MALE en-US-Standard-D",
+            "en-US-Standard-E": "FEMALE en-US-Standard-E",
+            "en-US-Standard-F": "FEMALE en-US-Standard-F",
+            "en-US-Standard-G": "FEMALE en-US-Standard-G",
+            "en-US-Standard-H": "FEMALE en-US-Standard-H",
+            "en-US-Standard-I": "MALE en-US-Standard-I",
+            "en-US-Standard-J": "MALE en-US-Standard-J",
+            "en-US-Studio-O": "FEMALE en-US-Studio-O",
+            "en-US-Studio-Q": "MALE en-US-Studio-Q",
+            "en-US-Wavenet-A": "MALE en-US-Wavenet-A",
+            "en-US-Wavenet-B": "MALE en-US-Wavenet-B",
+            "en-US-Wavenet-C": "FEMALE en-US-Wavenet-C",
+            "en-US-Wavenet-D": "MALE en-US-Wavenet-D",
+            "en-US-Wavenet-E": "FEMALE en-US-Wavenet-E",
+            "en-US-Wavenet-F": "FEMALE en-US-Wavenet-F",
+            "en-US-Wavenet-G": "FEMALE en-US-Wavenet-G",
+            "en-US-Wavenet-H": "FEMALE en-US-Wavenet-H",
+            "en-US-Wavenet-I": "MALE en-US-Wavenet-I",
+            "en-US-Wavenet-J": "MALE en-US-Wavenet-J"
         }
     },
 
