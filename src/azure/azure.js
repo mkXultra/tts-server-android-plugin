@@ -77,8 +77,8 @@ function getAudio(text, voice, rate, volume, pitch) {
     let reqHeaders = {
         'Ocp-Apim-Subscription-Key': apiKey,
         'Content-Type': 'application/ssml+xml',
-        'X-Microsoft-OutputFormat': 'audio-48khz-96kbitrate-mono-mp3',
-        'User-Agent': 'YourAppName'
+        'X-Microsoft-OutputFormat': 'ogg-24khz-16bit-mono-opus',
+        'User-Agent': 'tts-server-plugin-mk-azure'
     };
 
     if (isEnglish(text)) {
