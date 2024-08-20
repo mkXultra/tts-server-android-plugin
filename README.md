@@ -8,6 +8,7 @@ Currently, this repository supports two TTS plugins:
 
 1. OpenAI TTS
 2. Google Cloud Platform (GCP) TTS
+3. Azure TTS
 
 These plugins extend the functionality of the tts-server-android application, providing additional text-to-speech options for users.
 
