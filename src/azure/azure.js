@@ -1,7 +1,7 @@
 let apiKey = ttsrv.userVars["apiKey"]
 let manualLangSpeed = ttsrv.userVars["manualLangSpeed"]
 let region = ttsrv.userVars["region"]
-let defaultVoice = "en-US-AvaMultilingualNeural4"
+let defaultVoice = "en-US-AvaNeural"
 let jpDefaultVoice = "ja-JP-NanamiNeural"
 let jpDefaultMaleVoice = "ja-JP-DaichiNeural"
 
@@ -144,13 +144,13 @@ let EditorJS = {
 
     "getVoices": function (locale) {
         return {
+
+            // "en-US-AndrewMultilingualNeural4": "MALE en-US-AndrewMultilingualNeural4",
+            // "en-US-EmmaMultilingualNeural4": "FEMALE en-US-EmmaMultilingualNeural4",
+            // "en-US-BrianMultilingualNeural4": "MALE en-US-BrianMultilingualNeural4",
+
             // default
             defaultVoice: `FEMALE ${defaultVoice}`,
-
-            "en-US-AndrewMultilingualNeural4": "MALE en-US-AndrewMultilingualNeural4",
-            "en-US-EmmaMultilingualNeural4": "FEMALE en-US-EmmaMultilingualNeural4",
-            "en-US-BrianMultilingualNeural4": "MALE en-US-BrianMultilingualNeural4",
-            "en-US-AvaNeural": "FEMALE en-US-AvaNeural",
             "en-US-AndrewNeural": "MALE en-US-AndrewNeural",
             "en-US-EmmaNeural": "FEMALE en-US-EmmaNeural",
             "en-US-BrianNeural": "MALE en-US-BrianNeural",
