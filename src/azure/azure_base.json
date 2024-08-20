@@ -1,0 +1,22 @@
+[
+  {
+    "version": 2,
+    "name": "AzureTts",
+    "pluginId": "mk.azure.tts",
+    "author": "mkXultra",
+    "defVars": {
+      "apiKey": {
+        "label": "API-KEY",
+        "hint": "Azure API-KEY"
+      },
+      "manualLangSpeed": {
+        "label": "Manual Language Speed",
+        "hint": "Manual Language Speed"
+      },
+      "region": {
+        "label": "Region",
+        "hint": "Region"
+      }
+    }
+  }
+]
